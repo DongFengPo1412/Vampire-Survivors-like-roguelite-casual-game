@@ -8,6 +8,9 @@
 /[B|b]uilds/
 /[L|l]ogs/
 /[U|u]ser[S|s]ettings/
+/[A|a]rtifacts/
+/[M|m]emory[C|c]aptures/
+/[R|r]ecordings/
 
 # Memory Dumps
 *.lnk
@@ -35,6 +38,11 @@ ExportedObj/
 *.opendb
 *.tlog
 
+# IDE files and folders
+.vs/
+.idea/
+.vscode/
+
 # Unity secondary files
 sysinfo.txt
 
@@ -49,3 +57,4 @@ crashlytics-build.properties
 # OS generated files
 .DS_Store
 Thumbs.db
+
