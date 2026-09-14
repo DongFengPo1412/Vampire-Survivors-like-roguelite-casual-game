@@ -82,19 +82,35 @@ In the modern 2D survivor-like genre, game engines face two paramount engineerin
 
 To deliver an endless roaming experience with minimal memory footprint and collider checks, the engine implements a **Toroidal Coordinate Relocation Algorithm** triggered upon collider exit events.
 
-The game world is segmented into tile chunks of width $W_x = 56$ and height $W_y = 40$. Let the player world position be $\mathbf{p}_{\text{player}} = (x_p, y_p)^{\top}$ and the tile center be $\mathbf{p}_{\text{tile}} = (x_t, y_t)^{\top}$. When the player exits the bounding area collider, the axial coordinate deltas are computed:
+The game world is segmented into tile chunks. The chunk dimensions and spatial coordinates are defined as:
+
+$$
+W_x = 56, \quad W_y = 40
+$$
+
+$$
+\mathbf{p}_{\text{player}} = \begin{pmatrix} x_p \\ y_p \end{pmatrix}, \quad \mathbf{p}_{\text{tile}} = \begin{pmatrix} x_t \\ y_t \end{pmatrix}
+$$
+
+When the player exits the bounding area collider, the axial coordinate deltas are computed:
 
 $$
 \Delta x = |x_p - x_t|, \quad \Delta y = |y_p - y_t|
 $$
 
-Given the player's current directional input vector $\mathbf{v}_{\text{in}} = (v_x, v_y)^{\top}$, the discrete axial sign function is defined as:
+Given the player's current directional input vector:
+
+$$
+\mathbf{v}_{\text{in}} = \begin{pmatrix} v_x \\ v_y \end{pmatrix}
+$$
+
+The discrete axial sign function is defined as:
 
 $$
 \text{sgn}(v_k) = \begin{cases} 1, & v_k \ge 0 \\ -1, & v_k < 0 \end{cases}, \quad k \in \{x, y\}
 $$
 
-The tile translation offset vector $\mathbf{p}'_{\text{tile}} = \mathbf{p}_{\text{tile}} + \mathbf{T}$ follows the conditional mapping:
+The tile translation offset vector $\mathbf{T}$ (with updated coordinates $\mathbf{p}' = \mathbf{p} + \mathbf{T}$) follows the conditional mapping:
 
 $$
 \mathbf{T} = \begin{cases} 
@@ -154,7 +170,7 @@ $$
 \omega = \omega_0 \cdot (1 + \alpha_{\text{glove}}), \quad \omega_0 = 150^\circ/\text{s}
 $$
 
-The $k$-th crowbar ($k \in \{0, 1, \dots, N-1\}$) at timestamp $t$ exhibits angular position $\theta_k(t)$ and world position $\mathbf{p}_k(t)$:
+At timestamp $t$, the $k$-th crowbar ($k \in \{0, 1, \dots, N-1\}$) exhibits angular orientation and world coordinates defined by:
 
 $$
 \theta_k(t) = \theta_0 + \omega t + k \cdot \frac{360^\circ}{N}
@@ -164,7 +180,7 @@ $$
 \mathbf{p}_k(t) = \mathbf{p}_{\text{player}}(t) + R \cdot \begin{pmatrix} \cos\theta_k(t) \\ \sin\theta_k(t) \end{pmatrix}, \quad R = 1.8\,\text{m}
 $$
 
-The crowbar maintains an invariant penetration value $P_{\text{crowbar}} = -1$ (infinite penetration). Single-hit damage scales according to:
+The crowbar maintains an invariant infinite penetration property ($P = -1$). Single-hit damage scales according to:
 
 $$
 D_{\text{crowbar}} = D_{0} \cdot (1 + \beta_{\text{crowbar}})

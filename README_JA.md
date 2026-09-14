@@ -82,19 +82,35 @@
 
 最小限のテクスチャメモリとコライダー演算で無限マップを徘徊可能にするため、本システムはトリガー離脱イベントに基づく **トーラス型座標再配置アルゴリズム** を採用しています。
 
-ワールドは幅 $W_x = 56$、高さ $W_y = 40$ のタイルチャンクで構成されます。プレイヤーの世界座標を $\mathbf{p}_{\text{player}} = (x_p, y_p)^{\top}$、タイル中心を $\mathbf{p}_{\text{tile}} = (x_t, y_t)^{\top}$ とし、プレイヤーがコライダー領域外へ脱出した際の軸別絶対偏差を算出します：
+ワールドはタイルチャンクに分割され、各チャンクの基本寸法と座標パラメータは以下のように定義されます：
+
+$$
+W_x = 56, \quad W_y = 40
+$$
+
+$$
+\mathbf{p}_{\text{player}} = \begin{pmatrix} x_p \\ y_p \end{pmatrix}, \quad \mathbf{p}_{\text{tile}} = \begin{pmatrix} x_t \\ y_t \end{pmatrix}
+$$
+
+プレイヤーがコライダー領域外へ脱出した際の軸別絶対偏差を算出します：
 
 $$
 \Delta x = |x_p - x_t|, \quad \Delta y = |y_p - y_t|
 $$
 
-プレイヤーの入力移動ベクトル $\mathbf{v}_{\text{in}} = (v_x, v_y)^{\top}$ に基づく軸方向の符号関数は次式で与えられます：
+プレイヤーの入力移動ベクトルを定義します：
+
+$$
+\mathbf{v}_{\text{in}} = \begin{pmatrix} v_x \\ v_y \end{pmatrix}
+$$
+
+軸方向の符号関数は次式で与えられます：
 
 $$
 \text{sgn}(v_k) = \begin{cases} 1, & v_k \ge 0 \\ -1, & v_k < 0 \end{cases}, \quad k \in \{x, y\}
 $$
 
-タイル中心の補正移動量 $\mathbf{p}'_{\text{tile}} = \mathbf{p}_{\text{tile}} + \mathbf{T}$ は以下の条件分岐に従います：
+タイル中心の補正移動量 $\mathbf{T}$（更新後座標 $\mathbf{p}' = \mathbf{p} + \mathbf{T}$）は以下の条件分岐に従います：
 
 $$
 \mathbf{T} = \begin{cases} 
@@ -154,7 +170,7 @@ $$
 \omega = \omega_0 \cdot (1 + \alpha_{\text{glove}}), \quad \omega_0 = 150^\circ/\text{s}
 $$
 
-時刻 $t$ における第 $k$ 本目のバール ($k \in \{0, 1, \dots, N-1\}$) の回転角 $\theta_k(t)$ および世界座標 $\mathbf{p}_k(t)$ は次式で表されます：
+時刻 $t$ における第 $k$ 本目のバール（$k \in \{0, 1, \dots, N-1\}$）の回転角および世界座標は次式で表されます：
 
 $$
 \theta_k(t) = \theta_0 + \omega t + k \cdot \frac{360^\circ}{N}
@@ -164,7 +180,7 @@ $$
 \mathbf{p}_k(t) = \mathbf{p}_{\text{player}}(t) + R \cdot \begin{pmatrix} \cos\theta_k(t) \\ \sin\theta_k(t) \end{pmatrix}, \quad R = 1.8\,\text{m}
 $$
 
-貫通値は $P_{\text{crowbar}} = -1$（無限貫通）に固定され、1回の衝突ダメージは基礎値と強化倍率により決定されます：
+貫通値は無限貫通判定（貫通残数 $P = -1$）を保持し、1回の衝突ダメージは基礎値と強化倍率により決定されます：
 
 $$
 D_{\text{crowbar}} = D_{0} \cdot (1 + \beta_{\text{crowbar}})

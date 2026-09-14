@@ -82,19 +82,35 @@
 
 为了在极低显存与碰撞体开销下实现无界大地图漫游，系统采用基于触发器边界离开（Trigger Exit）的**环形坐标平移算法**。
 
-地图划分为基准瓦片单元，单区块跨度为 $W_x = 56, W_y = 40$。设玩家在世界坐标系下的位置为 $\mathbf{p}_{\text{player}} = (x_p, y_p)^{\top}$，瓦片中心位置为 $\mathbf{p}_{\text{tile}} = (x_t, y_t)^{\top}$。当玩家离开瓦片触发区域时，计算二者沿坐标轴的绝对位移偏差：
+地图划分为瓦片网格区块，单区块基本尺寸与中心空间坐标定义如下：
+
+$$
+W_x = 56, \quad W_y = 40
+$$
+
+$$
+\mathbf{p}_{\text{player}} = \begin{pmatrix} x_p \\ y_p \end{pmatrix}, \quad \mathbf{p}_{\text{tile}} = \begin{pmatrix} x_t \\ y_t \end{pmatrix}
+$$
+
+当玩家离开瓦片触发区域时，计算二者沿坐标轴的绝对位移偏差：
 
 $$
 \Delta x = |x_p - x_t|, \quad \Delta y = |y_p - y_t|
 $$
 
-定义玩家当前的运动输入方向向量为 $\mathbf{v}_{\text{in}} = (v_x, v_y)^{\top}$，其对应的离散轴向符号为：
+定义玩家当前的运动输入方向向量：
+
+$$
+\mathbf{v}_{\text{in}} = \begin{pmatrix} v_x \\ v_y \end{pmatrix}
+$$
+
+其对应的离散轴向符号函数为：
 
 $$
 \text{sgn}(v_k) = \begin{cases} 1, & v_k \ge 0 \\ -1, & v_k < 0 \end{cases}, \quad k \in \{x, y\}
 $$
 
-瓦片位置的平移修正函数 $\mathbf{p}'_{\text{tile}} = \mathbf{p}_{\text{tile}} + \mathbf{T}$ 满足如下条件选择：
+瓦片中心位置的平移修正向量 $\mathbf{T}$（更新后坐标满足 $\mathbf{p}' = \mathbf{p} + \mathbf{T}$）遵循如下条件选择：
 
 $$
 \mathbf{T} = \begin{cases} 
@@ -154,7 +170,7 @@ $$
 \omega = \omega_0 \cdot (1 + \alpha_{\text{glove}}), \quad \omega_0 = 150^\circ/\text{s}
 $$
 
-第 $k$ 枚撬棍 ($k \in \{0, 1, \dots, N-1\}$) 在时刻 $t$ 的角位置 $\theta_k(t)$ 与世界坐标位置 $\mathbf{p}_k(t)$ 分别满足：
+时刻 $t$ 下第 $k$ 枚撬棍（$k \in \{0, 1, \dots, N-1\}$）的角位置及世界坐标分别满足：
 
 $$
 \theta_k(t) = \theta_0 + \omega t + k \cdot \frac{360^\circ}{N}
@@ -164,7 +180,7 @@ $$
 \mathbf{p}_k(t) = \mathbf{p}_{\text{player}}(t) + R \cdot \begin{pmatrix} \cos\theta_k(t) \\ \sin\theta_k(t) \end{pmatrix}, \quad R = 1.8\,\text{m}
 $$
 
-撬棍的穿透属性恒定为 $P_{\text{crowbar}} = -1$（无限穿透），单次命中伤害由基准伤害与升级系数决定：
+撬棍拥有无限穿透判定（穿透残数 $P = -1$），单次命中伤害由基准伤害与升级系数决定：
 
 $$
 D_{\text{crowbar}} = D_{0} \cdot (1 + \beta_{\text{crowbar}})
