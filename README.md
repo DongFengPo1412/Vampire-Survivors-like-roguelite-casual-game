@@ -126,7 +126,7 @@ $$
 
 $$
 \text{Alloc}(i) = \begin{cases} 
-\mathbf{e}^*, \text{where } \mathbf{e}^* \in P_i \land \neg\text{active}(\mathbf{e}^*), & \text{if exists} \\
+\mathbf{e}_{\text{target}}, & \exists\, \mathbf{e}_{\text{target}} \in P_i \;\text{s.t.}\; \neg\text{active}(\mathbf{e}_{\text{target}}) \\
 \text{Instantiate}(\text{prefab}_i) \to P_i, & \text{otherwise}
 \end{cases}
 $$
