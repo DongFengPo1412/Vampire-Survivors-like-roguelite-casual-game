@@ -4,7 +4,7 @@ A Unity 2D survivor-like game with orbiting melee, mouse-directed projectiles, e
 
 [简体中文](README.md) · **English** · [日本語](README_JA.md)
 
-**Explore：** [Technical notes](docs/technical-notes.en.md) · [Setup and operation](docs/setup.en.md)
+**Explore:** [Technical notes](docs/technical-notes.en.md) · [Setup and operation](docs/setup.en.md)
 
 ROGue Survivor is a course game built around a five-minute run. Movement, weapons, direct enemy pursuit, object reuse, terrain relocation, progression, UI, and audio are connected in one scene. Its value is the complete gameplay loop and component integration. The former 500-enemy/144-FPS/zero-GC claims lack reproducible evidence and are not retained.
 
@@ -50,7 +50,7 @@ All 19 C# scripts were read and scene/prefab/five-item/animation links inspected
 
 1. Open the Assets/Packages/ProjectSettings root using the recorded **Unity 2022.3.17f1c1**.
 2. Restore locked packages; inspect URP 14.0.9, Input System 1.7.0, and Cinemachine 2.9.7.
-3. Open`Assets/Scenes/SampleScene.unity`, inspect references/input, enter Play, and click Start.
+3. Open `Assets/Scenes/SampleScene.unity`, inspect references/input, enter Play, and click Start.
 4. WASD/arrows move, mouse aims, held left fires, Esc pauses, and cards select upgrades. [Detailed setup](docs/setup.en.md).
 
 ## Limits and further work
