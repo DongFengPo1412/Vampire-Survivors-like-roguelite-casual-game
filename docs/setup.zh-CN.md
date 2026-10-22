@@ -1,0 +1,58 @@
+# ROGue Survivor — 部署与操作
+
+**简体中文** · [English](setup.en.md) · [日本語](setup.ja.md) · [项目首页](../README.md)
+
+<a id="environment"></a>
+
+## 项目版本与恢复
+
+[ProjectVersion](../ProjectSettings/ProjectVersion.txt)记录Unity2022.3.17f1c1；优先用该版，其他版本迁移需另行验证。`Packages/manifest.json`和`packages-lock.json`描述Input System1.7.0、URP14.0.9、Cinemachine2.9.7等依赖。Unity Hub把工程根目录作为项目打开，先让包恢复完成。
+
+```text
+.
+├── Assets/Scenes/SampleScene.unity
+├── Assets/ROGue Survivor/
+│   ├── Codes/      # 19个游戏脚本
+│   ├── Data/       # 5个ItemData
+│   ├── Prefabs/    # Enemy和两类弹丸
+│   ├── Animations/ / Audio/ / Sprites/ / Tiles/
+│   └── Player.inputactions
+├── Packages/
+├── ProjectSettings/
+└── docs/
+```
+
+Library、Temp、Builds等为忽略生成内容。桌面课程归档有旧可执行文件，但没有证据证明与当前HEAD完全一致，不用它替代当前工程验证。
+
+<a id="scene"></a>
+
+## 场景与输入
+
+打开SampleScene，核对GameManager的player/pool/UI/result引用、ObjectManager三预制体顺序、Spawner四组参数、Item五配置与按钮OnClick/Hide、敌人Dead动画事件、Ground/Area/Enemy/Bullet标签及层。保留meta，不能只复制.cs丢失GUID。
+
+ProjectSettings的activeInputHandler=2，即新旧输入并存。PlayerInput用Player动作图／消息通知；WASD和方向键绑定Move。枪械仍用旧Input.GetMouseButton(0)与mousePosition，因此不能只切成新输入后宣称行为一致。InputActions其他设备通用绑定并不证明完整手柄／手机玩法。
+
+<a id="operation"></a>
+
+## 游玩与构建
+
+点击开始，默认获得环绕武器。WASD／方向键移动，鼠标瞄准，持有手枪后左键按住持续开火。升级点击卡牌；Esc暂停／恢复。结果页的重试调用Scene0；退出按钮调用Application.Quit，在Editor内不退出编辑器。
+
+Build Settings现有唯一场景为SampleScene，按实际目标平台使用Unity的Build/Build And Run。仓库没有独立命令行构建方法、平台交付清单或本轮构建产物；不提供虚构的一键导出命令。Jump测试升级仍在源码，正式展示需知悉它会影响数值。
+
+<a id="checks"></a>
+
+## 本轮检查与后续
+
+本轮完成19脚本及序列化连接静态审查，没有运行游戏或性能测试。
+
+| 问题 | 核对 |
+| :--- | :--- |
+| 无法移动／射击 | 两套输入、PlayerInput通知、焦点和获得手枪状态。 |
+| 敌人死后不归池 | 动画控制器与Dead事件、碰撞和isALive状态。 |
+| 升级不足三卡 | 满级替换同一治疗项的已知行为。 |
+| 鞋子数值反常 | 场景速度4和Gear基速3不一致。 |
+| 旧资源Missing | 区分当前场景与未引用历史素材，不把缺失图改成其他资源冒充。 |
+| 性能不符合旧表 | 尚无受控基准；Profiler记录负载、分配、帧时后再报告。 |
+
+后续先做正确性与平衡验证，再评价对象池效果。美术和音频许可明细需补齐，不能由根MIT推导。
