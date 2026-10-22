@@ -6,7 +6,7 @@
 
 ## Editor version and restore
 
-[ProjectVersion](../ProjectSettings/ProjectVersion.txt) records Unity2022.3.17f1c1; prefer that version and validate any migration separately. Manifest/lock specify Input System1.7.0, URP14.0.9, Cinemachine2.9.7, and other packages. Add the root through Unity Hub and allow package restoration.
+[ProjectVersion](../ProjectSettings/ProjectVersion.txt) records Unity 2022.3.17f1c1; prefer that version and validate any migration separately. Manifest/lock specify Input System 1.7.0, URP 14.0.9, Cinemachine 2.9.7, and other packages. Add the root through Unity Hub and allow package restoration.
 
 ```text
 .
@@ -36,7 +36,7 @@ activeInputHandler=2 enables both backends. PlayerInput uses Player action-map m
 
 ## Play and build
 
-Click Start to receive the orbiting weapon. WASD/arrows move; aim with the mouse and hold left after obtaining the pistol. Choose cards on level-up; Esc pauses/resumes. Retry loads scene0; Application.Quit does not close the Editor.
+Click Start to receive the orbiting weapon. WASD/arrows move; aim with the mouse and hold left after obtaining the pistol. Choose cards on level-up; Esc pauses/resumes. Retry loads scene 0; Application.Quit does not close the Editor.
 
 SampleScene is the only enabled build scene. Use Unity Build/Build And Run for the actual target. No separate CLI build method, verified platform release, or current build artifact is supplied; a fictitious one-command export is not documented. The remaining Jump upgrade debug path affects balance.
 
@@ -44,14 +44,14 @@ SampleScene is the only enabled build scene. Use Unity Build/Build And Run for t
 
 ## Audit scope and next checks
 
-This pass reviewed19 scripts/serialized connections without running gameplay or benchmarks.
+This pass reviewed 19 scripts/serialized connections without running gameplay or benchmarks.
 
 | Problem | Inspect |
 | :--- | :--- |
 | No movement/fire | Both input backends, PlayerInput notification, focus, pistol acquisition. |
 | Dead enemy not recycled | Animator/Dead event, collision/isALive. |
 | Fewer than three cards | Multiple max-level items become one heal object. |
-| Unexpected shoe speed | Scene4 versus Gear baseline3. |
+| Unexpected shoe speed | Scene 4 versus Gear baseline 3. |
 | Old resources missing | Separate active-scene resources from unused history; do not substitute unrelated assets. |
 | Performance differs | No controlled baseline; profile load, allocation, and frame time. |
 

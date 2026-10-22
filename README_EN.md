@@ -44,18 +44,18 @@ flowchart LR
 
 See [historical upgrades, victory, and opening](docs/technical-notes.en.md#evidence). Screenshots are not load/FPS/GC measurements.
 
-All19 C# scripts were read and scene/prefab/five-item/animation links inspected. Unity, executable builds, and Play Mode tests were not run.
+All 19 C# scripts were read and scene/prefab/five-item/animation links inspected. Unity, executable builds, and Play Mode tests were not run.
 
 ## Open and play
 
-1. Open the Assets/Packages/ProjectSettings root using the recorded **Unity2022.3.17f1c1**.
-2. Restore locked packages; inspect URP14.0.9, Input System1.7.0, and Cinemachine2.9.7.
+1. Open the Assets/Packages/ProjectSettings root using the recorded **Unity 2022.3.17f1c1**.
+2. Restore locked packages; inspect URP 14.0.9, Input System 1.7.0, and Cinemachine 2.9.7.
 3. Open`Assets/Scenes/SampleScene.unity`, inspect references/input, enter Play, and click Start.
 4. WASD/arrows move, mouse aims, held left fires, Esc pauses, and cards select upgrades. [Detailed setup](docs/setup.en.md).
 
 ## Limits and further work
 
-Pools have no prewarming/capacity limit and search in O(n). Exhausted pools still instantiate; scanning/upgrades allocate too, so0 B/Frame is unsupported. Enemies use neither A* nor flow fields; firearms are not hitscan; relocated terrain is not procedural level generation.
+Pools have no prewarming/capacity limit and search in O(n). Exhausted pools still instantiate; scanning/upgrades allocate too, so 0 B/Frame is unsupported. Enemies use neither A* nor flow fields; firearms are not hitscan; relocated terrain is not procedural level generation.
 
 First address the remaining Jump debug upgrade, fewer than three choices after max-level fallback, and shoe speed conflicting with scene settings. Then verify combat/recycling and profile fixed-load frame time/memory.
 
