@@ -1,7 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,6 +7,7 @@ public class Player : MonoBehaviour
 {
     public Vector2 inputVec;
     public float speed;
+    public float BaseSpeed { get; private set; }
     public Scanner scanner;
     public Hand[] hands;
     Rigidbody2D rigid;
@@ -17,6 +16,7 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        BaseSpeed = speed;
         rigid = GetComponent<Rigidbody2D>();
         sprite = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
@@ -54,6 +54,9 @@ public class Player : MonoBehaviour
     void OnCollisionStay2D(Collision2D collision)
     {
         if (!GameManager.instance.isLive)
+            return;
+
+        if (!collision.gameObject.CompareTag("Enemy"))
             return;
         
         GameManager.instance.health -= Time.deltaTime * 20;

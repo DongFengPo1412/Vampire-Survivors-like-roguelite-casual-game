@@ -31,9 +31,9 @@
 p_{t+1}=p_t+v\,\frac{p_{player}-p_t}{\lVert p_{player}-p_t\rVert}\Delta t
 ```
 
-撬棍由父Weapon按默认150°/s旋转，Batch把实例放在半径1.8处，角度代码为整数`360/count`。手枪每默认0.5 s、按住左键发一颗弹；方向来自Camera.ScreenToWorldPoint，z差符号的平面投影还需实机核对。它不是射线命中检测或自动锁敌。
+近战默认150°/s，Batch在半径1.8上按 `360f/count` 等角放置；手枪默认按住左键每0.5 s发射。方向使用Camera.ScreenToWorldPoint，运行时投影仍需检查；没有射线命中或自动瞄准。
 
-Bullet速度10；perforation每次Enemy触发减1，到-1回收，因此起始0可命中一次；-1用于环绕武器，表示不因碰撞耗尽。出Area失活。敌人扣血并击退，死亡关碰撞和刚体模拟、加kill与经验，动画事件再失活。玩家OnCollisionStay不筛Enemy标签，实际伤害范围依赖场景碰撞层。
+敌人触发时子弹减少穿透计数并在-1时回收，初值0可命中一次，初值-1的环绕物不会耗尽；离区也回收。敌人死亡禁用碰撞/物理、结算击杀经验并由动画事件回收。玩家持续碰撞现在只接受Enemy标签；场景Enemy预制体已核对该标签。
 
 <a id="pool-map"></a>
 
@@ -64,11 +64,11 @@ p'_{enemy}=p_{enemy}+30\,v_{input}+\epsilon,\qquad \epsilon_x,\epsilon_y\sim U(-
 
 源码用floor(gameTime/60)并钳制到数组末项，`levelTime`未使用，不是指数动态难度。每次敌人死亡直接GetExp，无经验拾取物／吸附算法。经验阈值为3/5/10/20/40/60/80/100/120/200，后续钳在200。
 
-五个物品是近战、手枪、手套、鞋、满血治疗；每份配置有五级数组。第一次武器选择用baseDamage/baseCount，后续伤害为base×(1+damages[level])、count累加；不是整张旧六级数值表。鞋子从源码基速3计算，而场景玩家起始4，会有“升级反而降速”的风险。手套改变环绕速度或射击间隔。
+五种物品保留原五级配置、首次baseDamage/baseCount与后续base×(1+damages[level])、count累加。鞋子使用Awake捕获的基速（当前场景4），按 `BaseSpeed*(1+rate)` 计算，不叠乘上次结果；手套仍改变环绕速度/射击间隔。
 
 升级从五个索引拒绝重复抽三个，不按稀有度或权重。满级项替换为同一个items[4]治疗，多个替换可合并为一个可见选项；未补抽。游戏胜利300 s后激活10000伤害的EnemyCleaner，0.5 s后结算；失败也等待0.5 s。暂停／升级时间归零，BGM是AudioHighPassFilter高通而非低通。
 
-Weapon.Update残留`Input.GetButtonDown("Jump")`直接LevelUp(10,1)的测试路径；项目同时启用新旧输入。不要把调试行为或通用InputActions内的手柄／触屏绑定当作完整平台操作支持。
+正式路径已移除Jump直接升级；新旧输入后端仍同时启用。通用InputActions中的手柄/触屏绑定不等于完整的平台操作验收。
 
 <a id="evidence"></a>
 
@@ -80,4 +80,4 @@ Weapon.Update残留`Input.GetButtonDown("Jump")`直接LevelUp(10,1)的测试路�
 
 本轮解析manifest、lock、InputActions并追踪场景及GUID；46个非项目GUID在本机PackageCache找到，内置GUID单列。另三个未找到的旧图片／动画GUID仅出现在未被当前场景资源图引用的Pal、Player0_*及Stand1历史资源，不据此宣称全仓库所有资源都完整。
 
-未运行Editor、C#完整编译、Play Mode、导出或Profiler；截图中的等级／击杀只是一个展示时刻。144+ FPS、500敌人、0 B/Frame、draw calls与内存成绩无脚本和原日志，已删除。应用代码、配置、场景、素材、meta均未改动。
+使用本机Unity 2022.3.17f1c1自带Roslyn和现有程序集引用，完整编译19个应用C#脚本通过，输出全部在隔离缓存。未启动Editor、运行Play Mode、导出平台包或执行Profiler；测试仍需覆盖敌人接触/地形接触、鞋子各级和非整除数量环绕布局。

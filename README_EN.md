@@ -64,3 +64,9 @@ First address the remaining Jump debug upgrade, fewer than three choices after m
 Maintained by **Chaoran Liu / 刘超然** as a course game. Records do not establish original authorship of every script/asset. Unity/packages/pixel art/audio are not personal original work merely because they are included.
 
 Code license: [MIT](LICENSE). Specific third-party visual/audio sources and permissions still need documentation; code licensing does not license every asset. [Technical notes](docs/technical-notes.en.md) · [Setup](docs/setup.en.md)
+
+## Maintenance and validation
+
+The 2026-10 revision removes the Jump-to-upgrade debug path, bases shoe multipliers on scene speed captured in `Player.Awake` instead of a hard-coded 3, limits player contact damage to Enemy-tagged objects, and uses `360f/count` for evenly spaced orbiting weapons without integer truncation.
+
+All 19 application C# scripts compile with the installed Unity 2022.3.17f1c1 Roslyn compiler and existing assembly references, with outputs isolated in task cache. No Editor, Play Mode, platform export or Profiler run occurred. Enemy/terrain contact, all shoe levels and non-divisor orbit counts still need gameplay validation.

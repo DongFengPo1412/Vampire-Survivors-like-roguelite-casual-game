@@ -40,11 +40,6 @@ public class Weapon : MonoBehaviour
         }
 
         
-        // Test Code 
-        if (Input.GetButtonDown("Jump"))
-        {
-            LevelUp(10, 1);
-        }
     }
 
     public void LevelUp(float damage, int count)
@@ -125,7 +120,7 @@ public class Weapon : MonoBehaviour
             bullet.localRotation = Quaternion.identity;
 
             // Rotate crowbar
-            Vector3 rotateVector = Vector3.forward * (360 / count) * index;
+            Vector3 rotateVector = Vector3.forward * (360f / count) * index;
             bullet.Rotate(rotateVector);
             bullet.Translate(bullet.up * 1.8f, Space.World);
 

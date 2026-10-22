@@ -38,7 +38,7 @@ activeInputHandler=2 enables both backends. PlayerInput uses Player action-map m
 
 Click Start to receive the orbiting weapon. WASD/arrows move; aim with the mouse and hold left after obtaining the pistol. Choose cards on level-up; Esc pauses/resumes. Retry loads scene 0; Application.Quit does not close the Editor.
 
-SampleScene is the only enabled build scene. Use Unity Build/Build And Run for the actual target. No separate CLI build method, verified platform release, or current build artifact is supplied; a fictitious one-command export is not documented. The remaining Jump upgrade debug path affects balance.
+The direct Jump upgrade has been removed. Both input backends remain enabled; generic gamepad/touch InputActions bindings are not a complete platform-control acceptance test.
 
 <a id="checks"></a>
 
@@ -56,3 +56,5 @@ This pass reviewed 19 scripts/serialized connections without running gameplay or
 | Performance differs | No controlled baseline; profile load, allocation, and frame time. |
 
 Validate correctness/balance before pooling performance. Visual/audio license records remain incomplete; root MIT does not supply them.
+
+All 19 application C# scripts compile with the installed Unity 2022.3.17f1c1 Roslyn compiler and existing assembly references, with outputs isolated in task cache. No Editor, Play Mode, platform export or Profiler run occurred. Enemy/terrain contact, all shoe levels and non-divisor orbit counts still need gameplay validation.

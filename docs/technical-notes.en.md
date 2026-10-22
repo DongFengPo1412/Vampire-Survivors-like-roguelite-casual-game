@@ -31,9 +31,9 @@ Player FixedUpdate uses inputVec×speed×fixedDeltaTime with MovePosition; seria
 p_{t+1}=p_t+v\,\frac{p_{player}-p_t}{\lVert p_{player}-p_t\rVert}\Delta t
 ```
 
-The melee Weapon rotates at default 150°/s; Batch positions objects at radius 1.8 with integer `360/count` angles. Pistol fires one bullet every default 0.5 s while left is held. Direction uses Camera.ScreenToWorldPoint; the z-difference sign requires runtime projection review. There is no hitscan or automatic aim.
+The melee weapon defaults to 150°/s; Batch places objects at radius 1.8 using `360f/count` angles. The pistol defaults to one shot per 0.5 s while left is held. Camera.ScreenToWorldPoint determines direction; runtime projection still needs review. There is no hitscan or automatic aim.
 
-Bullet speed is 10. Each Enemy trigger decrements perforation; reaching-1 deactivates it, so initial 0 permits one hit. Initial-1 means orbiting objects do not exhaust on hits. Area exit also deactivates. Enemy damage/knockback leads to collider/physics disable, kill/experience, then death-event deactivation. Player OnCollisionStay does not filter Enemy tags; scene collision layers determine its actual damage scope.
+Enemy triggers decrement bullet perforation and deactivate at -1: initial 0 permits one hit, and initial -1 orbiting objects do not exhaust. Area exit also deactivates. Enemy death disables collision/physics, awards kills/experience and returns through animation events. Player contact damage now requires the Enemy tag, confirmed on the scene enemy prefab.
 
 <a id="pool-map"></a>
 
@@ -64,11 +64,11 @@ This function does not renormalize input or sample a cone around the player; zer
 
 Source uses floor(gameTime/60), clamped to the last entry; levelTime is unused. This is not exponential adaptive difficulty. Enemy death directly grants experience, without pickup/magnet systems. Thresholds are 3/5/10/20/40/60/80/100/120/200 and then capped at 200.
 
-Five items are melee, pistol, gloves, shoes, full heal, with five-entry level arrays. Initial weapon selection uses baseDamage/baseCount; later damage is base×(1+damages[level]) and count is accumulated, unlike the old six-level table. Shoes use code baseline 3 versus scene speed 4, potentially slowing the player on upgrade. Gloves modify orbit speed/fire interval.
+Five items retain the five-level settings, initial baseDamage/baseCount, later base×(1+damages[level]) and accumulated count. Shoes use the Awake-captured baseline (4 in the current scene), computing `BaseSpeed*(1+rate)` without compounding prior upgrades. Gloves still change orbit speed/fire interval.
 
 Three distinct indices are sampled from five using rejection, without rarity weights. Max-level choices all map to the same items[4] heal; multiple replacements can reduce visible choices without resampling. At 300 s, victory activates a 10000-damage EnemyCleaner and waits 0.5 s before results; defeat also waits 0.5 s. Pause/upgrades stop time and enable AudioHighPassFilter, not low-pass.
 
-Weapon.Update retains `Input.GetButtonDown("Jump")` calling LevelUp(10,1). Both input backends are enabled. Debug behavior and generic gamepad/touch InputActions bindings do not establish fully supported platform controls.
+The direct Jump upgrade has been removed. Both input backends remain enabled; generic gamepad/touch InputActions bindings are not a complete platform-control acceptance test.
 
 <a id="evidence"></a>
 
@@ -80,4 +80,4 @@ Weapon.Update retains `Input.GetButtonDown("Jump")` calling LevelUp(10,1). Both 
 
 Manifest/lock/InputActions and scene GUID links were inspected. Forty-six non-project GUIDs resolve in local PackageCache; built-ins are separate. Three missing historical image/animation GUIDs occur only in Pal, Player0_*, and Stand1 resources outside the current scene asset graph. This is not a claim that every repository asset is complete.
 
-No Editor run, full C# compile, Play Mode, export, or Profiler pass occurred. Screenshot levels/kills describe one moment. Unsupported 144+ FPS/500 enemies/0 B per frame/draw-call/memory benchmarks were removed. Application code, settings, scenes, assets, and meta files are unchanged.
+All 19 application C# scripts compile with the installed Unity 2022.3.17f1c1 Roslyn compiler and existing assembly references, with outputs isolated in task cache. No Editor, Play Mode, platform export or Profiler run occurred. Enemy/terrain contact, all shoe levels and non-divisor orbit counts still need gameplay validation.
