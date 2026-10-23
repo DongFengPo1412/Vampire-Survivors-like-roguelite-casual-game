@@ -10,6 +10,8 @@ public class Item : MonoBehaviour
     public int level;
     public Weapon weapon;
     public Gear gear;
+    public bool CanUpgrade => data != null &&
+        (data.itemType == ItemData.ItemType.Heal || level < data.damages.Length);
 
     Image icon;
     Text textLevel;
@@ -50,6 +52,7 @@ public class Item : MonoBehaviour
 
     public void OnClick()
     {
+        if (!CanUpgrade) return;
         switch(data.itemType)
         {
             case ItemData.ItemType.Melee:
@@ -92,7 +95,7 @@ public class Item : MonoBehaviour
                 break;
         }
         
-        if (level == data.damages.Length)
+        if (data.itemType != ItemData.ItemType.Heal && level >= data.damages.Length)
         {
             GetComponent<Button>().interactable = false;
         }

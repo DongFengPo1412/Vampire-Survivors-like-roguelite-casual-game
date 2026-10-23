@@ -58,3 +58,15 @@ ProjectSettings的activeInputHandler=2，即新旧输入并存。PlayerInput用P
 后续先做正确性与平衡验证，再评价对象池效果。美术和音频许可明细需补齐，不能由根MIT推导。
 
 使用本机Unity 2022.3.17f1c1自带Roslyn和现有程序集引用，完整编译19个应用C#脚本通过，输出全部在隔离缓存。未启动Editor、运行Play Mode、导出平台包或执行Profiler；测试仍需覆盖敌人接触/地形接触、鞋子各级和非整除数量环绕布局。
+
+### 升级选择的隔离回归
+
+本轮另用实际 `LevelUp.Next` 和隔离的 Unity 接口替身，对 5 种候选状态执行 500 轮选择检查：正常、只剩治疗、仅两项、没有有效项及不足三项输入；均通过。19 个应用 C# 脚本仍编译通过。测试源码在 [Tests](../Tests/UpgradeSelectionRegression.cs)，不位于 Assets，也不替代 Play Mode。
+
+独立项目需要 .NET 6 SDK；本轮使用 Unity 自带 Roslyn/.NET 运行时执行同一源码，未运行 SDK 构建命令。将构建产物放到仓库外。
+
+```powershell
+$task = Join-Path $env:USERPROFILE '.codex\cache\tasks\game-check-<unique-id>'
+dotnet build Tests/UpgradeSelectionRegression.csproj -p:BaseIntermediateOutputPath="$task/obj/" -p:OutputPath="$task/bin/"
+dotnet "$task/bin/UpgradeSelectionRegression.dll"
+```

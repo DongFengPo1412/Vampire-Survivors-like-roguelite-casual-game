@@ -42,29 +42,19 @@ public class LevelUp : MonoBehaviour
             item.gameObject.SetActive(false);
         }
 
-        // 2. Activate 3 random items from the disabled ones
-        int[] randItems = new int[3];
-        while (true)
+        // Filter before sampling: exhausted upgrades do not collapse into the
+        // same heal button. If fewer than three choices remain, show each once.
+        List<Item> candidates = new List<Item>();
+        foreach (Item item in items)
         {
-            randItems[0] = Random.Range(0, items.Length);
-            randItems[1] = Random.Range(0, items.Length);
-            randItems[2] = Random.Range(0, items.Length);
-
-            // checking for same random items (excluding them)
-            if (randItems[0] != randItems[1] && randItems[1] != randItems[2] && randItems[0] != randItems[2])
-                break;
+            if (item.CanUpgrade) candidates.Add(item);
         }
-
-        for (int index = 0; index < randItems.Length; index++)
+        int count = Mathf.Min(3, candidates.Count);
+        for (int choice = 0; choice < count; choice++)
         {
-            Item ranItem = items[randItems[index]];
-
-            // 3. Replace max-level items with consumable items
-            if (ranItem.level == ranItem.data.damages.Length)
-            {
-                items[4].gameObject.SetActive(true);
-            }
-            else ranItem.gameObject.SetActive(true);
+            int index = Random.Range(0, candidates.Count);
+            candidates[index].gameObject.SetActive(true);
+            candidates.RemoveAt(index);
         }
     }
 }

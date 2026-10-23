@@ -66,7 +66,7 @@ Source uses floor(gameTime/60), clamped to the last entry; levelTime is unused. 
 
 Five items retain the five-level settings, initial baseDamage/baseCount, later base×(1+damages[level]) and accumulated count. Shoes use the Awake-captured baseline (4 in the current scene), computing `BaseSpeed*(1+rate)` without compounding prior upgrades. Gloves still change orbit speed/fire interval.
 
-Three distinct indices are sampled from five using rejection, without rarity weights. Max-level choices all map to the same items[4] heal; multiple replacements can reduce visible choices without resampling. At 300 s, victory activates a 10000-damage EnemyCleaner and waits 0.5 s before results; defeat also waits 0.5 s. Pause/upgrades stop time and enable AudioHighPassFilter, not low-pass.
+Eligible items are filtered before selection; heal remains reusable but appears at most once per round. Sample up to three without replacement, showing the available count when fewer remain. There is no duplicate heal fallback or rejection loop. Empty upgrade arrays do not disable consumables, and exhausted stale clicks are rejected. The 300 s enemy-clear/result flow is unchanged.
 
 The direct Jump upgrade has been removed. Both input backends remain enabled; generic gamepad/touch InputActions bindings are not a complete platform-control acceptance test.
 

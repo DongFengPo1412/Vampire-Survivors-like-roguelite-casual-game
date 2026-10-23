@@ -58,3 +58,15 @@ Jumpの直接強化を削除しました。新旧入力バックエンドは併�
 正しさとバランスを先に確認してから再利用効果を測ります。素材ライセンスは未整備で、MITから推定しません。
 
 Unity 2022.3.17f1c1付属Roslynと既存アセンブリ参照でアプリC#19本のコンパイルが通過し、出力は隔離キャッシュ内です。Editor起動、Play Mode、プラットフォーム出力、Profilerは未実施です。敵・地形接触、靴の全段階、割り切れない周回個数は実プレイで確認が必要です。
+
+### 強化選択の隔離回帰
+
+実際の `LevelUp.Next` をUnityインターフェースの隔離スタブで動かし、通常・治療のみ・残り2件・候補なし・入力3件未満の5状態を計500回検査しました。アプリC#19本のコンパイルも成功。[独立テスト](../Tests/UpgradeSelectionRegression.cs)はAssets外で、Play Modeの代わりではありません。
+
+独立プロジェクトには.NET 6 SDKが必要です。今回はSDKコマンドではなくUnity付属Roslyn/.NETで同じソースを実行しました。生成物はリポジトリ外へ出力します。
+
+```powershell
+$task = Join-Path $env:USERPROFILE '.codex\cache\tasks\game-check-<unique-id>'
+dotnet build Tests/UpgradeSelectionRegression.csproj -p:BaseIntermediateOutputPath="$task/obj/" -p:OutputPath="$task/bin/"
+dotnet "$task/bin/UpgradeSelectionRegression.dll"
+```

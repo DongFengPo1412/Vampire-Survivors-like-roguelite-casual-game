@@ -58,3 +58,15 @@ This pass reviewed 19 scripts/serialized connections without running gameplay or
 Validate correctness/balance before pooling performance. Visual/audio license records remain incomplete; root MIT does not supply them.
 
 All 19 application C# scripts compile with the installed Unity 2022.3.17f1c1 Roslyn compiler and existing assembly references, with outputs isolated in task cache. No Editor, Play Mode, platform export or Profiler run occurred. Enemy/terrain contact, all shoe levels and non-divisor orbit counts still need gameplay validation.
+
+### Isolated upgrade-selection regression
+
+The actual `LevelUp.Next` passes 500 selections across five availability scenarios using isolated Unity-interface stubs: normal, heal only, two remaining, no eligible item and fewer than three inputs. All 19 application C# scripts also compile. The [standalone harness](../Tests/UpgradeSelectionRegression.cs) is outside Assets and does not replace Play Mode.
+
+The standalone project requires the .NET 6 SDK. This run compiled the same source with Unity Roslyn/.NET runtime rather than running the SDK build command. Keep build products outside the repository.
+
+```powershell
+$task = Join-Path $env:USERPROFILE '.codex\cache\tasks\game-check-<unique-id>'
+dotnet build Tests/UpgradeSelectionRegression.csproj -p:BaseIntermediateOutputPath="$task/obj/" -p:OutputPath="$task/bin/"
+dotnet "$task/bin/UpgradeSelectionRegression.dll"
+```

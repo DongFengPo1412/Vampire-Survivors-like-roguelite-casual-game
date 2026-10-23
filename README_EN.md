@@ -33,7 +33,7 @@ flowchart LR
 | Combat | Orbiting crowbars, speed 10 physical bullets, penetration counts, collision damage, knockback impulses, death animation. |
 | Enemies/terrain | Four spawn configurations; direct pursuit; four Ground chunks relocate on Area exit. |
 | Reuse | Three prefab buckets; linear inactive-object search, Instantiate when exhausted, reuse after deactivation. |
-| Progression | Kills directly grant experience; five ScriptableObjects define melee, pistol, gloves, shoes, heal; distinct indices are sampled. |
+| Progression | Kills directly grant experience; five ScriptableObjects define melee, pistol, gloves, shoes, heal; up to three eligible items are sampled without replacement. |
 | UI/audio | HUD/pause/upgrades/results; BGM and 16 SFX channels; high-pass filtering during pause/upgrades. |
 
 [Source, equations, scene parameters, and limits](docs/technical-notes.en.md). Scanner finds nearest targets, but current firearm aiming uses the mouse, not automatic targeting.
@@ -57,7 +57,7 @@ All 19 C# scripts were read and scene/prefab/five-item/animation links inspected
 
 Pools have no prewarming/capacity limit and search in O(n). Exhausted pools still instantiate; scanning/upgrades allocate too, so 0 B/Frame is unsupported. Enemies use neither A* nor flow fields; firearms are not hitscan; relocated terrain is not procedural level generation.
 
-First address the remaining Jump debug upgrade, fewer than three choices after max-level fallback, and shoe speed conflicting with scene settings. Then verify combat/recycling and profile fixed-load frame time/memory.
+Next validate input, enemy contact, recycling and upgrades in gameplay, then profile a fixed load. Upgrade selection filters exhausted non-consumables before sampling up to three without replacement; fewer available items produce fewer choices, with no duplicate heal fallback.
 
 ## Attribution and license
 
@@ -70,3 +70,5 @@ Code license: [MIT](LICENSE). Specific third-party visual/audio sources and perm
 The 2026-10 revision removes the Jump-to-upgrade debug path, bases shoe multipliers on scene speed captured in `Player.Awake` instead of a hard-coded 3, limits player contact damage to Enemy-tagged objects, and uses `360f/count` for evenly spaced orbiting weapons without integer truncation.
 
 All 19 application C# scripts compile with the installed Unity 2022.3.17f1c1 Roslyn compiler and existing assembly references, with outputs isolated in task cache. No Editor, Play Mode, platform export or Profiler run occurred. Enemy/terrain contact, all shoe levels and non-divisor orbit counts still need gameplay validation.
+
+The actual `LevelUp.Next` passes 500 selections across five availability scenarios using isolated Unity-interface stubs: normal, heal only, two remaining, no eligible item and fewer than three inputs. All 19 application C# scripts also compile. The [standalone harness](Tests/UpgradeSelectionRegression.cs) is outside Assets and does not replace Play Mode.
