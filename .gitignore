@@ -61,3 +61,4 @@ Thumbs.db
 
 # Hand-authored standalone regression project (not a generated Unity project)
 !/Tests/UpgradeSelectionRegression.csproj
+!/Tests/GameStateRegression.csproj

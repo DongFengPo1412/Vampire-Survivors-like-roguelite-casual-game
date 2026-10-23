@@ -50,8 +50,8 @@ This pass reviewed 19 scripts/serialized connections without running gameplay or
 | :--- | :--- |
 | No movement/fire | Both input backends, PlayerInput notification, focus, pistol acquisition. |
 | Dead enemy not recycled | Animator/Dead event, collision/isALive. |
-| Fewer than three cards | Multiple max-level items become one heal object. |
-| Unexpected shoe speed | Scene 4 versus Gear baseline 3. |
+| Fewer than three cards | Fewer eligible items may remain; exhausted upgrades are filtered and heal appears at most once. |
+| Unexpected shoe speed | Check the scene baseline and configured rate at each level; no fixed baseline of 3 is used. |
 | Old resources missing | Separate active-scene resources from unused history; do not substitute unrelated assets. |
 | Performance differs | No controlled baseline; profile load, allocation, and frame time. |
 
@@ -65,8 +65,12 @@ The actual `LevelUp.Next` passes 500 selections across five availability scenari
 
 The standalone project requires the .NET 6 SDK. This run compiled the same source with Unity Roslyn/.NET runtime rather than running the SDK build command. Keep build products outside the repository.
 
+The [result/pause regression](../Tests/GameStateRegression.cs) compiles the current `GameManager.cs` and `Pause.cs` with Unity-interface stubs. Eight scenarios cover win/loss delay and completion, timeout/Escape in one frame, normal pause/resume, the start menu, upgrades, hiding an unopened pause, and retry. It does not run a Unity scene or record/play audio; Play Mode acceptance remains pending.
+
 ```powershell
-$task = Join-Path $env:USERPROFILE '.codex\cache\tasks\game-check-<unique-id>'
-dotnet build Tests/UpgradeSelectionRegression.csproj -p:BaseIntermediateOutputPath="$task/obj/" -p:OutputPath="$task/bin/"
-dotnet "$task/bin/UpgradeSelectionRegression.dll"
+$task = Join-Path $env:USERPROFILE ('.codex\cache\tasks\game-check-' + [guid]::NewGuid().ToString('N'))
+dotnet build Tests/UpgradeSelectionRegression.csproj -p:BaseIntermediateOutputPath="$task/upgrade-obj/" -p:OutputPath="$task/upgrade-bin/"
+dotnet "$task/upgrade-bin/UpgradeSelectionRegression.dll"
+dotnet build Tests/GameStateRegression.csproj -p:BaseIntermediateOutputPath="$task/state-obj/" -p:OutputPath="$task/state-bin/"
+dotnet "$task/state-bin/GameStateRegression.dll"
 ```

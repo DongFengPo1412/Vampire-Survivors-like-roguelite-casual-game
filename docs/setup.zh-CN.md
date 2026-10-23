@@ -50,7 +50,7 @@ ProjectSettings的activeInputHandler=2，即新旧输入并存。PlayerInput用P
 | :--- | :--- |
 | 无法移动／射击 | 两套输入、PlayerInput通知、焦点和获得手枪状态。 |
 | 敌人死后不归池 | 动画控制器与Dead事件、碰撞和isALive状态。 |
-| 升级不足三卡 | 满级替换同一治疗项的已知行为。 |
+| 升级不足三卡 | 可用候选可能少于三项；满级非消耗品已过滤，治疗每轮最多一个。 |
 | 鞋子数值 | 使用场景基速与配置倍率；检查不同等级，不再沿用固定3。 |
 | 旧资源Missing | 区分当前场景与未引用历史素材，不把缺失图改成其他资源冒充。 |
 | 性能不符合旧表 | 尚无受控基准；Profiler记录负载、分配、帧时后再报告。 |
@@ -65,8 +65,12 @@ ProjectSettings的activeInputHandler=2，即新旧输入并存。PlayerInput用P
 
 独立项目需要 .NET 6 SDK；本轮使用 Unity 自带 Roslyn/.NET 运行时执行同一源码，未运行 SDK 构建命令。将构建产物放到仓库外。
 
+[结算与暂停回归](../Tests/GameStateRegression.cs)直接编译当前`GameManager.cs`和`Pause.cs`，用Unity接口替身覆盖8种状态场景：胜/负等待与完成、同帧超时/Esc、正常暂停恢复、开始菜单、升级界面、未打开暂停的Hide及重试。它不运行Unity场景、录音或播放；完整Play Mode验收仍待执行。
+
 ```powershell
-$task = Join-Path $env:USERPROFILE '.codex\cache\tasks\game-check-<unique-id>'
-dotnet build Tests/UpgradeSelectionRegression.csproj -p:BaseIntermediateOutputPath="$task/obj/" -p:OutputPath="$task/bin/"
-dotnet "$task/bin/UpgradeSelectionRegression.dll"
+$task = Join-Path $env:USERPROFILE ('.codex\cache\tasks\game-check-' + [guid]::NewGuid().ToString('N'))
+dotnet build Tests/UpgradeSelectionRegression.csproj -p:BaseIntermediateOutputPath="$task/upgrade-obj/" -p:OutputPath="$task/upgrade-bin/"
+dotnet "$task/upgrade-bin/UpgradeSelectionRegression.dll"
+dotnet build Tests/GameStateRegression.csproj -p:BaseIntermediateOutputPath="$task/state-obj/" -p:OutputPath="$task/state-bin/"
+dotnet "$task/state-bin/GameStateRegression.dll"
 ```

@@ -50,7 +50,7 @@ Jumpの直接強化を削除しました。新旧入力バックエンドは併�
 | :--- | :--- |
 | 移動・射撃不能 | 新旧入力、通知、フォーカス、拳銃取得。 |
 | 死亡敵が戻らない | Animator・Deadイベント、衝突・isALive。 |
-| 3カード未満 | 複数最大項目が1回復へ代替される挙動。 |
+| 3カード未満 | 有効候補が3件未満の場合があります。最大レベルを除外し、回復は各回最大1件です。 |
 | 靴の値 | シーン基速と設定倍率で各段階を確認。固定3は使用しません。 |
 | 古い素材Missing | 現シーンと未参照履歴を区別し、無関係素材で代用しません。 |
 | 性能が旧表と違う | 制御された基準なし。負荷・割当て・フレーム時間を記録します。 |
@@ -65,8 +65,12 @@ Unity 2022.3.17f1c1付属Roslynと既存アセンブリ参照でアプリC#19本
 
 独立プロジェクトには.NET 6 SDKが必要です。今回はSDKコマンドではなくUnity付属Roslyn/.NETで同じソースを実行しました。生成物はリポジトリ外へ出力します。
 
+[結果・一時停止の回帰](../Tests/GameStateRegression.cs)は現在の`GameManager.cs`と`Pause.cs`をUnityインターフェースのスタブと直接コンパイルします。勝敗の待機・完了、同一フレームの時間切れ/Esc、通常の一時停止再開、開始メニュー、強化、未表示PauseのHide、再試行を8場面で確認します。Unityシーン・録音・再生は実行せず、Play Mode検証は今後必要です。
+
 ```powershell
-$task = Join-Path $env:USERPROFILE '.codex\cache\tasks\game-check-<unique-id>'
-dotnet build Tests/UpgradeSelectionRegression.csproj -p:BaseIntermediateOutputPath="$task/obj/" -p:OutputPath="$task/bin/"
-dotnet "$task/bin/UpgradeSelectionRegression.dll"
+$task = Join-Path $env:USERPROFILE ('.codex\cache\tasks\game-check-' + [guid]::NewGuid().ToString('N'))
+dotnet build Tests/UpgradeSelectionRegression.csproj -p:BaseIntermediateOutputPath="$task/upgrade-obj/" -p:OutputPath="$task/upgrade-bin/"
+dotnet "$task/upgrade-bin/UpgradeSelectionRegression.dll"
+dotnet build Tests/GameStateRegression.csproj -p:BaseIntermediateOutputPath="$task/state-obj/" -p:OutputPath="$task/state-bin/"
+dotnet "$task/state-bin/GameStateRegression.dll"
 ```

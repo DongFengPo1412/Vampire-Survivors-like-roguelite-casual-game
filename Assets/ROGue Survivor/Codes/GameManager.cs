@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
 
     [Header("# Game Control")]
     public bool isLive;
+    public bool IsEnding { get; private set; }
     public float gameTime;
     public float maxGameTime = 300; // set max time of the 1 game
 
@@ -37,6 +38,7 @@ public class GameManager : MonoBehaviour
 
     public void GameStart()
     {
+        if (IsEnding) return;
         health = maxHealth;
         uiLevelUp.Select(0); // set standart weapon
         ResumeGame();
@@ -47,6 +49,8 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
+        if (IsEnding) return;
+        IsEnding = true;
         StartCoroutine(GameOverRoutine());
     }
 
@@ -66,6 +70,8 @@ public class GameManager : MonoBehaviour
 
     public void GameWon()
     {
+        if (IsEnding) return;
+        IsEnding = true;
         StartCoroutine(GameWonRoutine());
     }
 
@@ -86,15 +92,16 @@ public class GameManager : MonoBehaviour
 
     public void GameRetry()
     {
+        Time.timeScale = 1;
         SceneManager.LoadScene(0);
-        ResumeGame();
     }
 
     void Update()
     {
+        if (IsEnding) return;
         if (!isLive)
         {
-            if (Input.GetKeyDown(KeyCode.Escape) && !uiResult.gameObject.activeSelf && uiLevelUp.gameObject.transform.localScale == Vector3.zero)
+            if (Input.GetKeyDown(KeyCode.Escape) && pause.IsPaused)
                 pause.Hide();
             return;
         } 
@@ -106,6 +113,7 @@ public class GameManager : MonoBehaviour
            //Debug.Log("gameTime = " + gameTime);
             gameTime = maxGameTime;
             GameWon();
+            return;
         }
         
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -137,6 +145,7 @@ public class GameManager : MonoBehaviour
     // unpause game
     public void ResumeGame()
     {
+        if (IsEnding) return;
         isLive = true;
         Time.timeScale = 1;
     }

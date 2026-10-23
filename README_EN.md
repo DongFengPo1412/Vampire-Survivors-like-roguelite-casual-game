@@ -23,7 +23,7 @@ flowchart LR
     Combat --> Result[Survival timer and result UI]
 ```
 
-`SampleScene` is the only game scene enabled in Build Settings. It configures 300 seconds, 100 health, and four enemy stages. Upgrades/pause control Time.timeScale; death or expiry leads to results.
+`SampleScene` is the only game scene enabled in Build Settings. It configures 300 seconds, 100 health, and four enemy stages. Upgrades/pause control Time.timeScale; death or expiry leads to results. `IsEnding` protects result transitions and prevents duplicate win/loss routines. Escape resumes only an actual pause, never the start menu, upgrades or result delay. Timeout takes priority over Escape in the same frame; retry restores the time scale before reloading the scene.
 
 ## Implemented systems
 

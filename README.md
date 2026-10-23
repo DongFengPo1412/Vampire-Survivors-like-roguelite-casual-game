@@ -23,7 +23,7 @@ flowchart LR
     Combat --> Result[生存计时与胜负界面]
 ```
 
-`SampleScene`是唯一加入Build Settings的游戏场景。场景配置300 s单局、100生命、四阶段刷怪；升级与暂停通过Time.timeScale控制时间，死亡／时间到进入结算。
+`SampleScene`是唯一加入Build Settings的游戏场景。场景配置300 s单局、100生命、四阶段刷怪；升级与暂停通过Time.timeScale控制时间，死亡／时间到进入结算。 结算由`IsEnding`保护，胜负只触发一次；Esc只恢复真正的暂停，不能恢复开局菜单、升级界面或结算等待。超时与Esc同帧时优先进入结算，重试在重新加载场景前恢复时间倍率。
 
 ## 已接入的玩法与工程设计
 
